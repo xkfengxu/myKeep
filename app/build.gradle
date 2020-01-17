@@ -44,8 +44,14 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     //一个强大并且灵活的RecyclerViewAdapter
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta11'
-    //带有动画的RecyclerView
-    implementation 'jp.wasabeef:recyclerview-animators:2.2.6'
+    //RecyclerView 下拉刷新框架
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'  //没有使用特殊Header，可以不加这行
+    //Leakcanary 检测内存泄露(仅debug版本使用)
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
+    //动画 素材 www.lottiefiles.com
+    implementation "com.airbnb.android:lottie:3.3.1"
 }
 
 /**
