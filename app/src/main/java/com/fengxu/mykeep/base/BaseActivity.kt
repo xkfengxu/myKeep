@@ -1,0 +1,71 @@
+package com.fengxu.mykeep.base
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.contains
+import com.fengxu.mykeep.R
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
+/**
+ * @author fengxu
+ */
+abstract class BaseActivity : AppCompatActivity() {
+
+    var contentView: ViewGroup? = null
+    var floatView: View? = null
+
+    @SuppressLint("InflateParams")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        beforeViews()
+        setContentView(getContentView())
+        intiView()
+        contentView =
+            this.window?.decorView?.rootView?.findViewById<ViewGroup>(android.R.id.content)
+        floatView = this.layoutInflater.inflate(R.layout.view_float, null)
+    }
+
+    abstract fun intiView()
+
+    abstract fun getContentView(): Int
+
+    open fun beforeViews() {}
+
+    /**
+     * 在屏幕上添加一个view，展示一些信息
+     */
+    @SuppressLint("InflateParams")
+    fun showFloatView(fileName: String) {
+        if (floatView?.let { contentView?.contains(it) }!!) {
+            contentView?.removeView(floatView)
+            return
+        }
+        val value = readPageInfo(fileName)
+        if (TextUtils.isEmpty(value)) {
+            return
+        }
+        contentView?.addView(floatView)
+        floatView!!.findViewById<TextView>(R.id.tv_function_info).text = value
+    }
+
+    fun readPageInfo(fileName: String): String {
+        val content = StringBuilder("")
+        try {
+            val instream = resources.assets.open(fileName)
+            val buffreader = BufferedReader(InputStreamReader(instream))
+            var line: String
+            while (buffreader.readLine().also { line = it } != null) {
+                content.append(line + "\n")
+            }
+            instream.close()
+        } catch (e: Exception) {
+        }
+        return content.toString()
+    }
+}
