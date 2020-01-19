@@ -2,24 +2,29 @@ package com.fengxu.mykeep
 
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.fengxu.mykeep.adapter.ActionAdapter
+import com.chad.library.adapter.base.entity.MultiItemEntity
+import com.fengxu.mykeep.adapter.CommonAdapter
 import com.fengxu.mykeep.base.BaseActivity
 import com.fengxu.mykeep.bean.Action
+import com.fengxu.mykeep.bean.Article
+import com.fengxu.mykeep.widget.BannerView
+import com.fengxu.mykeep.widget.banner.CircleIndicator
 import com.scwang.smartrefresh.header.FunGameBattleCityHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter
 
-
 class MainActivity : BaseActivity() {
 
-    var adapter: ActionAdapter? = ActionAdapter(null)
+    private var adapter: CommonAdapter? = CommonAdapter(null)
+    private val actionList = ArrayList<MultiItemEntity>()
 
     override fun getContentView(): Int {
         return R.layout.activity_main
@@ -28,10 +33,10 @@ class MainActivity : BaseActivity() {
     override fun intiView() {
         findViewById<TextView>(R.id.tv_confirm).setOnClickListener {
             showFloatView(this.localClassName)
-            val actionList = ArrayList<Action>()
+            actionList.clear()
             actionList.add(Action("s"))
             actionList.add(Action("2"))
-            actionList.add(Action("1"))
+            actionList.add(Article("1"))
             adapter?.setNewData(actionList)
         }
         val lottie = findViewById<LottieAnimationView>(R.id.animation_view)
@@ -42,6 +47,21 @@ class MainActivity : BaseActivity() {
         testRecyclerViewAdapterHelper()
         testSmartRefreshLayout()
         setLottieAnimationView(lottie)
+        initBanner()
+    }
+
+    /**
+     * 轮播图
+     */
+    private fun initBanner() {
+        val mBannerView: BannerView? = findViewById(R.id.banner_view)
+        mBannerView!!.setIndicator(CircleIndicator(this))
+        val bannerData: MutableList<String> =
+            java.util.ArrayList()
+        bannerData.add("http://pic41.photophoto.cn/20161217/0017030086344808_b.jpg")
+        bannerData.add("http://photocdn.sohu.com/20150114/Img407794285.jpg")
+        bannerData.add("http://img.zcool.cn/community/015372554281b00000019ae9803e5c.jpg")
+        mBannerView.setBannerData(bannerData)
     }
 
     /**
@@ -54,6 +74,7 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onAnimationEnd(animation: Animator) {
+                lottie.visibility = View.GONE
             }
 
             override fun onAnimationCancel(animation: Animator) {
@@ -85,14 +106,15 @@ class MainActivity : BaseActivity() {
      * 试用 RecyclerViewAdapterHelper
      */
     private fun testRecyclerViewAdapterHelper() {
-        val actionList = ArrayList<Action>()
         actionList.add(Action("a"))
-        actionList.add(Action("b"))
+        actionList.add(Article("b"))
         actionList.add(Action("c"))
-        adapter?.setNewData(actionList)
+        adapter?.addData(actionList)
         adapter?.addChildClickViewIds(R.id.tv_action_name)
         //item动画
         adapter?.setAnimationWithDefault(BaseQuickAdapter.AnimationType.AlphaIn)
+        //空数据页面
+        adapter?.setEmptyView(R.layout.view_empty)
         adapter?.setOnItemClickListener { _, _, _ ->
             Toast.makeText(
                 this,

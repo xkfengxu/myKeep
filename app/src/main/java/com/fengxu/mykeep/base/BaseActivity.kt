@@ -17,8 +17,8 @@ import java.io.InputStreamReader
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    var contentView: ViewGroup? = null
-    var floatView: View? = null
+    private var contentView: ViewGroup? = null
+    private var floatView: View? = null
 
     @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,7 @@ abstract class BaseActivity : AppCompatActivity() {
         setContentView(getContentView())
         intiView()
         contentView =
-            this.window?.decorView?.rootView?.findViewById<ViewGroup>(android.R.id.content)
+            this.window?.decorView?.rootView?.findViewById(android.R.id.content)
         floatView = this.layoutInflater.inflate(R.layout.view_float, null)
     }
 
@@ -54,7 +54,7 @@ abstract class BaseActivity : AppCompatActivity() {
         floatView!!.findViewById<TextView>(R.id.tv_function_info).text = value
     }
 
-    fun readPageInfo(fileName: String): String {
+    private fun readPageInfo(fileName: String): String {
         val content = StringBuilder("")
         try {
             val instream = resources.assets.open(fileName)
