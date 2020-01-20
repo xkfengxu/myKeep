@@ -1,0 +1,237 @@
+MultiType  复杂列表视图新写法
+
+stackoverflow
+
+WeakReference，softRefrrence，phantomReference
+
+TextSwitcher
+animated-rotate
+
+android.os.Bulid
+
+LinearLayoutManager reverseLayout
+
+自定义控件
+BannerLayout
+obtainStyledAttributes declare-styleable
+
+
+imageLoader glide Picasso Fresco
+https://blog.csdn.net/m0_37711172/article/details/75090235
+
+本地缓存
+HomeinvestFragment .loadLocalData
+
+
+String.format(Locale.CHINA, "%1$d-%2$d", bean.getMin(), bean.getMax())
+
+http://cclive.aniu.tv/live/anzb.m3u8
+
+刷新框架 SmartRefreshLayout
+
+androidX
+
+SurfaceView textureView videoview GLSurfaceView surfaceTexture
+
+硬件加速
+对特殊view取消 view.setLayerType
+对application或者activity设置 <application
+        android:hardwareAccelerated="true"
+
+
+dependencies的类型
+
+Tint属性
+
+flutter https://www.jianshu.com/p/9aaabc60d8af
+
+kotlin
+类有属性无字段
+http://www.imooc.com/article/79534
+ https://blog.csdn.net/sunny2come/article/details/80874066
+密封类，泛型星号投射，委托
+
+imageview缩放 PhotoView   tab_time_content横屏缩放大图
+
+第三方框架总结 https://www.cnblogs.com/jingping/p/10471056.html
+
+
+注意事项
+
+apktool版本 aapt.exe版本（从sdk中拿）
+-r 生成apktool.yml
+
+
+---反编译
+
+apktool.bat d -r appdzcj-release.apk
+
+dex2jar  ->classes.dex  jd-gui查看class代码
+
+对照修改apktool生成的smail文件
+
+回编译
+
+apktool.bat b appdzcj-release -o test.apk
+
+砸壳
+
+签名
+
+D:\studio\jre\bin
+
+win10 命令行乱码 chcp 936
+keytool -genkey -alias test -keyalg RSA -validity 20000 -keystore xx.keystore
+
+keytool -list -v -keystore D:\studio\jre\bin\xx.keystore -storepass yiersan456
+
+-storepass yiersan456 -keypass yiersan456
+jarsigner -verbose -keystore xx.keystore  test.apk test
+zip -d test.apk META-INF/\*
+
+windows adb 
+设备管理器 硬件ID，VID_xxxx
+将这个值写到C:\Users\Administrator\.android的目录下的adb_usb.ini文件中(如果没有就新建一个)
+3个adb文件移到 system，system32，64包下，少了会有问题
+端口占用问题
+adb nodaemon server
+netstat -ano | findstr "15802"
+tasklist | findstr "29008"
+taskkill /f /pid 25696
+
+AccessibilityService 
+
+python Groovy
+
+kotlin缺陷
+http://www.sohu.com/a/235653979_733133
+1.方法遮蔽
+2.java与kotlin互操作可能影响Null-safe特性
+3.类字面量
+4.相反顺序的类型声明 影响方法阅读 变量名输入建议
+5.伴生对象
+6.集合字面量
+
+adb shell dumpsys window | findstr mCurrentFocus 当前应用包名
+
+android tv https://www.jianshu.com/p/a54e4f6a21ed
+
+gradle
+资源混淆，app瘦身 and_resguard_plugin 白名单
+orm greendao 
+tinker
+constraint_layout
+flexbox
+方法数超过64k multidex
+event_bus
+glide
+百度统计 mobstat
+okhttp
+retrofit
+rxjava
+photo_view
+gson
+bugly
+getui
+
+plantuml 文档流程图
+
+rap2 接口定义测试（jsonplaceholder）
+
+蓝湖，摹客  ui设计 
+
+fir
+
+plugin开发
+https://blog.csdn.net/w855227/article/details/79483966
+
+
+回溯是一种通过穷举所有可能情况来找到所有解的算法,  通过每一步来达到结果
+双指针
+-窗口滑动，  连续，候选值种类确定
+-二分查找
+分治算法
+动态规划
+ListNode
+TreeNode
+字符串匹配算法 （KMP 算法--BM--Sunday 算法）
+
+java 注解
+在定义一个注解需要三个步骤- (1)实现接口 (2)定义类型 (3)定义保留策略
+只有RetentionPolicy.RUNTIME的注解能够通过反射访问。
+元注解就是注解的注解，可以在注解接口中使用的注解。
+元注解 保留 继承 文档 目标类型
+枚举 ElementType
+
+APT(Annotation Processing Tool)即注解处理器
+View注入框架-butterknife
+mvp  -  dagger
+EventBus
+
+
+使用Mvp+RxJava+Dagger2时（模板化代码生成Java代码    JavaPoet JavaPoet是一款可以自动生成Java文件的第三方依赖）
+
+InputFilter 字符串过滤器（实时格式化金额，长度控制，内容替换）
+
+SparseArray 稀疏数组（二分查找 SparseArray有两个优点：1.避免了自动装箱，2.数据结构不会依赖于外部对象映射。）
+
+SuperTextView gif，style，配合图片加载，动画，精确触摸事件
+
+Lottie 精美动画
+
+flutter模块的调试 关闭当前应用 flutter模块中输入命令flutter attach  r
+
+JNI是Java Native Interface的缩写  （localserver）
+.so文件 so是shared object的缩写 在运行时，才会加载
+NDK :Android 平台上用来编译 C/C++库的工具
+
+ROM(read-only memory）
+
+Android中所有的应用进程的创建都是一个应用进程通过Binder请求SystemServer进程，SystemServer进程发送socket消息给Zygote进程，统一由Zygote进程创建出来的
+ZygoteInit进程启动后，会注册一个Socket，在runSelectLoop方法中开启一个while死循环等待ActivityManagerService创建新进程的请求，其次，ZygoteInit启动了SystemServer进程，执行SystemServer的main方法。
+
+
+ARouter  APT(Annotation Processing Tool)即注解处理器 （ButterKnife、Dagger、EventBus）
+
+IOC & AOP 思想
+
+arcelable的性能要强于Serializable的原因
+
+ 1）. 在内存的使用中,前者在性能方面要强于后者
+
+  2）. 后者在序列化操作的时候会产生大量的临时变量,(原因是使用了反射机制)从而导致GC的频繁调用,因此在性能上会稍微逊色
+
+  3）. Parcelable是以Ibinder作为信息载体的.在内存上的开销比较小,因此在内存之间进行数据传递的时候,Android推荐使用Parcelable,既然是内存方面比价有优势,那么自然就要优先选择.
+
+  4）. 在读写数据的时候,Parcelable是在内存中直接进行读写,而Serializable是通过使用IO流的形式将数据读写入在硬盘上.
+但是：虽然Parcelable的性能要强于Serializable,但是仍然有特殊的情况需要使用Serializable,而不去使用Parcelable,因为Parcelable无法将数据进行持久化,因此在将数据保存在磁盘的时候,仍然需要使用后者,
+因为前者无法很好的将数据进行持久化.(原因是在不同的Android版本当中,Parcelable可能会不同,因此数据的持久化方面仍然是使用Serializable)
+
+快捷方式 尝试静态配置没有成功，动态添加可行
+
+navigation 没玩懂
+
+=====================wait check==================
+https://www.jianshu.com/p/f5514b1a826c
+Tinker application  - 代理 委托
+共享元素
+kotlin volatile
+画中画
+逆向单车，地铁添加快捷方式
+JavaPoet是一个动态生成代码的开源项目，在某些情况下具有特殊用处   +dagger+mvp
+flutter
+
+
+----------------------------------过往问题记录--------------------------------------
+activity被回收后再次打开，前一个fragment的页面被显示在重新打开页面的底层（设置背景暂时解决）
+
+微信分享，公共模块功能，2个app表现出不同的现象（尝试不同的缩略图解决）
+
+android8.0（api28）透明activity设置横竖屏导致崩溃（多种办法，可以简单判断28版本时设置非透明，8.1版本已修复该问题）
+
+在Android5.x上，创建webview时会发生carsh,报错信息（自定义WebView，或appcompat版本由1.1.0->1.0.2）
+
+Android高版本联网失败报错  APP改用https请求,更改网络安全配置(network_security_config.xml)
+
+
+

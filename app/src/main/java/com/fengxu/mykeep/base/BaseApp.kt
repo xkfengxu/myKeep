@@ -1,17 +1,23 @@
 package com.fengxu.mykeep.base
 
 import android.app.Application
-import android.content.Context
 
 /**
  * @author fengxu
+ * Application 基类
  */
 abstract class BaseApp : Application() {
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        //方法过多报错时再玩
-//        MultiDex.install(base)
+    override fun onCreate() {
+        super.onCreate()
+        initConfig()
     }
+
+    companion object {
+        var VERSION_NAME: String? = null
+        var SIGN: String? = null
+    }
+
+    abstract fun initConfig()
 
 }

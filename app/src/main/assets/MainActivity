@@ -6,3 +6,8 @@ SmartRefreshLayout
 Leakcanary
 lottie
 glide
+---↑↑4.6M------------------
+retrofit + Coroutines
+---↑↑5.2M------------------
+okhttp3:logging-interceptor
+fastjson

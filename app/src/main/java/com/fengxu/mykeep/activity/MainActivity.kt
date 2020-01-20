@@ -1,4 +1,4 @@
-package com.fengxu.mykeep
+package com.fengxu.mykeep.activity
 
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
@@ -10,10 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
+import com.fengxu.mykeep.R
 import com.fengxu.mykeep.adapter.CommonAdapter
 import com.fengxu.mykeep.base.BaseActivity
 import com.fengxu.mykeep.bean.Action
 import com.fengxu.mykeep.bean.Article
+import com.fengxu.mykeep.http.RetrofitHelper
+import com.fengxu.mykeep.http.api.RapApi
+import com.fengxu.mykeep.http.callback.CallBackList
+import com.fengxu.mykeep.http.response.BaseResponse
 import com.fengxu.mykeep.widget.BannerView
 import com.fengxu.mykeep.widget.banner.CircleIndicator
 import com.scwang.smartrefresh.header.FunGameBattleCityHeader
@@ -25,6 +30,8 @@ class MainActivity : BaseActivity() {
 
     private var adapter: CommonAdapter? = CommonAdapter(null)
     private val actionList = ArrayList<MultiItemEntity>()
+    private val bannerUrl: MutableList<String> = java.util.ArrayList()
+    private var mBannerView: BannerView? = null
 
     override fun getContentView(): Int {
         return R.layout.activity_main
@@ -33,11 +40,7 @@ class MainActivity : BaseActivity() {
     override fun intiView() {
         findViewById<TextView>(R.id.tv_confirm).setOnClickListener {
             showFloatView(this.localClassName)
-            actionList.clear()
-            actionList.add(Action("s"))
-            actionList.add(Action("2"))
-            actionList.add(Article("1"))
-            adapter?.setNewData(actionList)
+            getData()
         }
         val lottie = findViewById<LottieAnimationView>(R.id.animation_view)
         //recyclerView 设置layoutManager，adapter
@@ -47,21 +50,45 @@ class MainActivity : BaseActivity() {
         testRecyclerViewAdapterHelper()
         testSmartRefreshLayout()
         setLottieAnimationView(lottie)
-        initBanner()
+        getBannerUrl()
     }
 
     /**
-     * 轮播图
+     * 请求测试数据
      */
-    private fun initBanner() {
-        val mBannerView: BannerView? = findViewById(R.id.banner_view)
-        mBannerView!!.setIndicator(CircleIndicator(this))
-        val bannerData: MutableList<String> =
-            java.util.ArrayList()
-        bannerData.add("http://pic41.photophoto.cn/20161217/0017030086344808_b.jpg")
-        bannerData.add("http://photocdn.sohu.com/20150114/Img407794285.jpg")
-        bannerData.add("http://img.zcool.cn/community/015372554281b00000019ae9803e5c.jpg")
-        mBannerView.setBannerData(bannerData)
+    private fun getData() {
+        RetrofitHelper.instance.getRapApi(RapApi::class.java).getActionList().execute(object :
+            CallBackList<Action>() {
+            override fun onResponse(response: List<Action>) {
+                actionList.clear()
+                actionList.addAll(response)
+                adapter?.setNewData(actionList)
+            }
+            override fun onError(response: BaseResponse) {
+                actionList.clear()
+                adapter?.setNewData(actionList)
+            }
+        })
+    }
+
+    /**
+     * 请求轮播图
+     */
+    private fun getBannerUrl() {
+        RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner().execute(object :
+            CallBackList<String>() {
+            override fun onResponse(response: List<String>) {
+                if (mBannerView == null) {
+                    mBannerView = findViewById(R.id.banner_view)
+                    mBannerView!!.setIndicator(CircleIndicator(applicationContext))
+                }
+                bannerUrl.addAll(response)
+                mBannerView?.setBannerData(bannerUrl)
+            }
+            override fun onError(response: BaseResponse) {
+
+            }
+        })
     }
 
     /**

@@ -21,12 +21,18 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        buildConfigField("String", "SIGN", '"Kse40aLjEMCJfvxQm5wVNSSg793v0aTAe2h5SM4jCWK"')
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    //Invoke-customs are only supported starting with Android O (--min-api 26)
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -57,6 +63,16 @@ dependencies {
     //glide 图片加载
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    //retrofit
+    implementation"com.squareup.retrofit2:retrofit:2.7.0"
+    implementation"com.squareup.retrofit2:converter-gson:2.7.0"
+    //okhttp拦截器
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0'
+    //kotlin-Coroutines 协程
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2'
+    //fastjson
+    implementation 'com.alibaba:fastjson:1.2.61'
 }
 
 /**
