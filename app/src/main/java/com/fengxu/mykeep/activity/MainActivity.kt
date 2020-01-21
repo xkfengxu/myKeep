@@ -78,6 +78,7 @@ class MainActivity : BaseActivity() {
         RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner().execute(object :
             CallBackList<String>() {
             override fun onResponse(response: List<String>) {
+                //TODO 轮播图出来慢
                 if (mBannerView == null) {
                     mBannerView = findViewById(R.id.banner_view)
                     mBannerView!!.setIndicator(CircleIndicator(applicationContext))

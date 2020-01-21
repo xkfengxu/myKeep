@@ -106,6 +106,7 @@ class RetrofitHelper {
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             val call = originalCall?.clone()
+            //TODO  研究协程写法，改善网络请求流程代码
             val response = call?.execute()
             try {
                 withContext(Dispatchers.Main) {

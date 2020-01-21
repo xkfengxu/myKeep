@@ -221,8 +221,7 @@ kotlin volatile
 JavaPoet是一个动态生成代码的开源项目，在某些情况下具有特殊用处   +dagger+mvp
 flutter
 retrofit 动态代理service master
-
-
+ 
 ----------------------------------过往问题记录--------------------------------------
 activity被回收后再次打开，前一个fragment的页面被显示在重新打开页面的底层（设置背景暂时解决）
 
