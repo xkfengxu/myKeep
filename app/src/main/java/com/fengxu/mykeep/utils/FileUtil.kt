@@ -1,10 +1,9 @@
 package com.fengxu.mykeep.utils
 
 import com.fengxu.mykeep.MyApplication
-import java.io.Closeable
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 import java.nio.ByteBuffer
 
 /**
@@ -38,6 +37,62 @@ object FileUtil {
             close(fos)
         }
         return false
+    }
+
+    /**
+     * 使用NIO获取json串
+     */
+    fun getValueFromJsonFile(key: String?): String? {
+        val jsonFile: File? = key?.let { getJsonFile(it) }
+        if (jsonFile == null || !jsonFile.exists()) {
+            return Key.NIL
+        }
+        var fis: FileInputStream? = null
+        val bao = ByteArrayOutputStream()
+        return try {
+            fis = FileInputStream(jsonFile)
+            val fc = fis.channel
+            val buffer = ByteBuffer.allocate(1 shl 13)
+            var j: Int
+            while (fc.read(buffer).also { j = it } != -1) {
+                buffer.flip()
+                bao.write(buffer.array(), 0, j)
+                buffer.clear()
+            }
+            bao.toString()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Key.NIL
+        } finally {
+            close(fis)
+            close(bao)
+        }
+    }
+
+    /**
+     * 获取泛型类的type
+     *
+     * @param raw 泛型类的class, 如BaseResponse4Object.class
+     * @param args 泛型实参的class, LotteryBean.class
+     * @return 泛型类的type
+     */
+    fun type(
+        raw: Class<*>,
+        args: Type
+    ): ParameterizedType? {
+        return object : ParameterizedType {
+            override fun getActualTypeArguments(): Array<Type> {
+                return arrayOf(args)
+            }
+
+            override fun getOwnerType(): Type? {
+                return null
+            }
+
+            override fun getRawType(): Type {
+                return raw
+            }
+        }
     }
 
     /**

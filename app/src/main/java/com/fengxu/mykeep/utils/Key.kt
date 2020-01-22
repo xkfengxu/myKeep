@@ -8,4 +8,6 @@ package com.fengxu.mykeep.utils
 object Key {
     const val VERSION = "version"
     const val KEY_SIGN = "sign"
+    const val BANNER_URL = "banner_url"
+    const val NIL = ""
 }

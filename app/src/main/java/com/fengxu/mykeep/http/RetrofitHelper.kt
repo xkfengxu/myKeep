@@ -4,7 +4,6 @@ package com.fengxu.mykeep.http
 import android.util.ArrayMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fengxu.mykeep.http.converterfactory.StringConverterFactory
 import com.fengxu.mykeep.http.interceptor.CommonInterceptor
 import com.fengxu.mykeep.http.response.BaseResponse
 import com.fengxu.mykeep.http.response.ResponseList
@@ -18,7 +17,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -83,7 +81,6 @@ class RetrofitHelper : ViewModel() {
 //            .addCallAdapterFactory(RCallFactory())
             //添加转换器工厂用于对象的序列化和反序列化,还有guava、jackson、java8、jaxb、moshi、protobuf、scalars、simplexml、wire 等Converter
             .addConverterFactory(GsonConverterFactory.create())
-            .addConverterFactory(StringConverterFactory())
         try {
             //用反射的方式获取类中的请求域名，方便域名的切换
             val fieldd = tClass!!.getDeclaredField("API")
@@ -100,35 +97,6 @@ class RetrofitHelper : ViewModel() {
         throw UnsupportedOperationException("cannot be instantiated")
     }
 
-
-//    fun <R, T> execute(
-//        originalCall: Call<R>?,
-//        callback: BaseCallBack<T>?
-//    ) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val call = originalCall?.clone()
-//            val response = call?.execute()
-//            try {
-//                withContext(Dispatchers.Main) {
-//                    val body = response?.body()
-//                    if (body is BaseResponse) {
-//                        val baseResponse = body as BaseResponse
-//                        if (baseResponse.code == 0) {
-//                            callback?.onResponse(callback.parseNetworkResponse(body)!!)
-//                        } else {
-//                            callback?.onError(baseResponse)
-//                        }
-//                    } else {
-//                        callback?.onResponse(callback.parseNetworkResponse(body)!!)
-//                    }
-//                    callback?.onAfter()
-//                }
-//            } catch (e: Exception) {
-//                Log.e("REQUEST", "Exception ${e.message}")
-//            }
-//        }
-//    }
-
     @Suppress("UNCHECKED_CAST")
     fun <T> requestListData(
         request: suspend CoroutineScope.() -> BaseResponse,
@@ -138,6 +106,9 @@ class RetrofitHelper : ViewModel() {
         apiCall(request, success as (BaseResponse) -> Unit, error, null)
     }
 
+    /**
+     * 请求执行类
+     */
     @Suppress("UNCHECKED_CAST")
     fun apiCall(
         request: suspend CoroutineScope.() -> BaseResponse,
@@ -157,7 +128,7 @@ class RetrofitHelper : ViewModel() {
                     } catch (e: Throwable) {
                         e.printStackTrace()
                         val response = BaseResponse()
-                        //可自定义处理
+                        //可自定义处理  如缺少转换器报错之类会在此被捕获
                         response.code = -1
                         response.msg = e.message
                         return@coroutineScope response
@@ -172,5 +143,4 @@ class RetrofitHelper : ViewModel() {
             after?.invoke()
         }
     }
-
 }
