@@ -6,6 +6,6 @@ package com.fengxu.mykeep.http.response
  * @description 数据返回基类
  */
 open class BaseResponse {
-    val code: Int = -1
-    val msg: String? = null
+    var code: Int = -1
+    var msg: String? = null
 }

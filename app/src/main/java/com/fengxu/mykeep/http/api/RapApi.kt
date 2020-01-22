@@ -1,7 +1,6 @@
 package com.fengxu.mykeep.http.api
 
 import com.fengxu.mykeep.bean.Action
-import com.fengxu.mykeep.http.call.RCall
 import com.fengxu.mykeep.http.response.ResponseList
 import retrofit2.http.GET
 
@@ -20,12 +19,12 @@ interface RapApi {
      * 获取动作列表
      */
     @GET("app/mock/243232/getActionList")
-    fun getActionList(): RCall<ResponseList<Action>>
+    suspend fun getActionList(): ResponseList<Action>
 
     /**
      * 获取轮播图
      */
     @GET("app/mock/243232/getBanner")
-    fun getBanner(): RCall<ResponseList<String>>
+    suspend fun getBanner(): ResponseList<String>
 
 }

@@ -1,20 +1,21 @@
 package com.fengxu.mykeep.http
 
+
 import android.util.ArrayMap
-import android.util.Log
-import com.fengxu.mykeep.http.call.RCallFactory
-import com.fengxu.mykeep.http.callback.BaseCallBack
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.fengxu.mykeep.http.converterfactory.StringConverterFactory
 import com.fengxu.mykeep.http.interceptor.CommonInterceptor
 import com.fengxu.mykeep.http.response.BaseResponse
+import com.fengxu.mykeep.http.response.ResponseList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit
  * @createDate 2020 01 20
  * @description 网络请求配置工具
  */
-class RetrofitHelper {
+class RetrofitHelper : ViewModel() {
 
     /**
      * 静态内部类单例
@@ -79,7 +80,7 @@ class RetrofitHelper {
             //构建成用于请求的HTTP客户端
             .client(okBuilder.build())
             //添加一个呼叫适配器工厂以支持{@link * Call}以外的服务方法返回类型。
-            .addCallAdapterFactory(RCallFactory())
+//            .addCallAdapterFactory(RCallFactory())
             //添加转换器工厂用于对象的序列化和反序列化,还有guava、jackson、java8、jaxb、moshi、protobuf、scalars、simplexml、wire 等Converter
             .addConverterFactory(GsonConverterFactory.create())
             .addConverterFactory(StringConverterFactory())
@@ -100,32 +101,75 @@ class RetrofitHelper {
     }
 
 
-    fun <R, T> execute(
-        originalCall: Call<R>?,
-        callback: BaseCallBack<T>?
+//    fun <R, T> execute(
+//        originalCall: Call<R>?,
+//        callback: BaseCallBack<T>?
+//    ) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val call = originalCall?.clone()
+//            val response = call?.execute()
+//            try {
+//                withContext(Dispatchers.Main) {
+//                    val body = response?.body()
+//                    if (body is BaseResponse) {
+//                        val baseResponse = body as BaseResponse
+//                        if (baseResponse.code == 0) {
+//                            callback?.onResponse(callback.parseNetworkResponse(body)!!)
+//                        } else {
+//                            callback?.onError(baseResponse)
+//                        }
+//                    } else {
+//                        callback?.onResponse(callback.parseNetworkResponse(body)!!)
+//                    }
+//                    callback?.onAfter()
+//                }
+//            } catch (e: Exception) {
+//                Log.e("REQUEST", "Exception ${e.message}")
+//            }
+//        }
+//    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> requestListData(
+        request: suspend CoroutineScope.() -> BaseResponse,
+        success: ((info: ResponseList<T>) -> Unit),
+        error: ((info: BaseResponse) -> Unit)
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val call = originalCall?.clone()
-            //TODO  研究协程写法，改善网络请求流程代码
-            val response = call?.execute()
-            try {
-                withContext(Dispatchers.Main) {
-                    val body = response?.body()
-                    if (body is BaseResponse) {
-                        val baseResponse = body as BaseResponse
-                        if (baseResponse.code == 0) {
-                            callback?.onResponse(callback.parseNetworkResponse(body)!!)
-                        } else {
-                            callback?.onError(baseResponse)
-                        }
-                    } else {
-                        callback?.onResponse(callback.parseNetworkResponse(body)!!)
+        apiCall(request, success as (BaseResponse) -> Unit, error, null)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun apiCall(
+        request: suspend CoroutineScope.() -> BaseResponse,
+        success: ((info: BaseResponse) -> Unit),
+        error: ((info: BaseResponse) -> Unit),
+        after: (() -> Unit)?
+    ) {
+        viewModelScope.launch {
+            val response = withContext(IO) {
+                coroutineScope {
+                    try {
+                        //call?.execute()
+                        //invoke 接口只有一个方法的时候 内部将接口给实例化,逻辑通过invoke方法代理出去
+                        //request是匿名函数，invoke表示为通过函数变量调用自身
+                        //还不是很懂
+                        return@coroutineScope request.invoke(this)
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                        val response = BaseResponse()
+                        //可自定义处理
+                        response.code = -1
+                        response.msg = e.message
+                        return@coroutineScope response
                     }
-                    callback?.onAfter()
                 }
-            } catch (e: Exception) {
-                Log.e("REQUEST", "Exception ${e.message}")
             }
+            if (response.code == 0) {
+                success(response)
+            } else {
+                error(response)
+            }
+            after?.invoke()
         }
     }
 

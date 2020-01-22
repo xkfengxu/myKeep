@@ -17,6 +17,6 @@ class RCall<R>() {
     }
 
     fun <T> execute(callback: BaseCallBack<T>?) {
-        RetrofitHelper.instance.execute(call, callback)
+//        RetrofitHelper.instance.execute(call, callback)
     }
 }

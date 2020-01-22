@@ -10,6 +10,7 @@ import java.lang.reflect.Type
  * @author fengxu
  * @createDate 2020 01 20
  * @description 自定义call工厂类
+ * 原版框架不添加这个，会报IllegalArgumentException Unable to create call adapter for CallAdapter<*, *>
  */
 class RCallFactory : CallAdapter.Factory() {
     override fun get(

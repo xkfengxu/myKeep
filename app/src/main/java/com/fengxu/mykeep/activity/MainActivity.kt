@@ -17,8 +17,6 @@ import com.fengxu.mykeep.bean.Action
 import com.fengxu.mykeep.bean.Article
 import com.fengxu.mykeep.http.RetrofitHelper
 import com.fengxu.mykeep.http.api.RapApi
-import com.fengxu.mykeep.http.callback.CallBackList
-import com.fengxu.mykeep.http.response.BaseResponse
 import com.fengxu.mykeep.widget.BannerView
 import com.fengxu.mykeep.widget.banner.CircleIndicator
 import com.scwang.smartrefresh.header.FunGameBattleCityHeader
@@ -30,7 +28,7 @@ class MainActivity : BaseActivity() {
 
     private var adapter: CommonAdapter? = CommonAdapter(null)
     private val actionList = ArrayList<MultiItemEntity>()
-    private val bannerUrl: MutableList<String> = java.util.ArrayList()
+    private val bannerUrl: MutableList<String> = ArrayList()
     private var mBannerView: BannerView? = null
 
     override fun getContentView(): Int {
@@ -57,39 +55,61 @@ class MainActivity : BaseActivity() {
      * 请求测试数据
      */
     private fun getData() {
-        RetrofitHelper.instance.getRapApi(RapApi::class.java).getActionList().execute(object :
-            CallBackList<Action>() {
-            override fun onResponse(response: List<Action>) {
-                actionList.clear()
-                actionList.addAll(response)
-                adapter?.setNewData(actionList)
-            }
-            override fun onError(response: BaseResponse) {
-                actionList.clear()
-                adapter?.setNewData(actionList)
-            }
+        RetrofitHelper.instance.requestListData<Action>({
+            RetrofitHelper.instance.getRapApi(RapApi::class.java).getActionList()
+        }, {
+            actionList.clear()
+            it.data?.let { list -> actionList.addAll(list) }
+            adapter?.setNewData(null)
+            adapter?.setDiffNewData(actionList)
+        }, {
+            actionList.clear()
+            adapter?.setNewData(null)
+            adapter?.setDiffNewData(actionList)
         })
+//        RetrofitHelper.instance.getRapApi(RapApi::class.java).getActionList().execute(object :
+//            CallBackList<Action>() {
+//            override fun onResponse(response: List<Action>) {
+//                actionList.clear()
+//                actionList.addAll(response)
+//                adapter?.setNewData(actionList)
+//            }
+//            override fun onError(response: BaseResponse) {
+//                actionList.clear()
+//                adapter?.setNewData(actionList)
+//            }
+//        })
     }
 
     /**
      * 请求轮播图
      */
     private fun getBannerUrl() {
-        RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner().execute(object :
-            CallBackList<String>() {
-            override fun onResponse(response: List<String>) {
-                //TODO 轮播图出来慢
-                if (mBannerView == null) {
-                    mBannerView = findViewById(R.id.banner_view)
-                    mBannerView!!.setIndicator(CircleIndicator(applicationContext))
-                }
-                bannerUrl.addAll(response)
-                mBannerView?.setBannerData(bannerUrl)
+        RetrofitHelper.instance.requestListData<String>({
+            RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner()
+        }, {
+            //TODO 轮播图出来慢
+            if (mBannerView == null) {
+                mBannerView = findViewById(R.id.banner_view)
+                mBannerView!!.setIndicator(CircleIndicator(applicationContext))
             }
-            override fun onError(response: BaseResponse) {
-
-            }
-        })
+            it.data?.let { list -> bannerUrl.addAll(list) }
+            mBannerView?.setBannerData(bannerUrl)
+        }, {})
+//        RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner().execute(object :
+//            CallBackList<String>() {
+//            override fun onResponse(response: List<String>) {
+//                if (mBannerView == null) {
+//                    mBannerView = findViewById(R.id.banner_view)
+//                    mBannerView!!.setIndicator(CircleIndicator(applicationContext))
+//                }
+//                bannerUrl.addAll(response)
+//                mBannerView?.setBannerData(bannerUrl)
+//            }
+//            override fun onError(response: BaseResponse) {
+//
+//            }
+//        })
     }
 
     /**
