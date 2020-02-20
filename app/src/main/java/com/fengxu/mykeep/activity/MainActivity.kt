@@ -44,7 +44,6 @@ class MainActivity : BaseActivity() {
     override fun intiView() {
         findViewById<TextView>(R.id.tv_confirm).setOnClickListener {
             showFloatView(this.localClassName)
-            getData()
         }
         val lottie = findViewById<LottieAnimationView>(R.id.animation_view)
         //recyclerView 设置layoutManager，adapter
@@ -93,7 +92,7 @@ class MainActivity : BaseActivity() {
             RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner()
         }, {
             it.data?.let { list ->
-                val jsonUrl  = JSON.toJSONString(it.data)
+                val jsonUrl = JSON.toJSONString(it.data)
                 if (jsonUrl != cacheUrlString) {
                     FileUtil.saveValueToJsonFile(Key.BANNER_URL, jsonUrl)
                     bannerUrl.clear()
@@ -106,7 +105,7 @@ class MainActivity : BaseActivity() {
     }
 
     /**
-     * Lottie使用个小技巧
+     * Lottie设置
      */
     private fun setLottieAnimationView(lottie: LottieAnimationView) {
         //动画监听
@@ -119,13 +118,14 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onAnimationCancel(animation: Animator) {
+                lottie.visibility = View.GONE
             }
 
             override fun onAnimationRepeat(animation: Animator) {
             }
         })
         //倒放
-        lottie.speed = (-1).toFloat()
+//        lottie.speed = (-1).toFloat()
         //当你设置-1的时候就代表无限循环
         lottie.repeatCount = -1
     }
@@ -137,8 +137,9 @@ class MainActivity : BaseActivity() {
      */
     private fun testSmartRefreshLayout() {
         val refreshLayout = findViewById<SmartRefreshLayout>(R.id.rf_video) as RefreshLayout
-        refreshLayout.setOnRefreshListener { refreshlayout -> refreshlayout.finishRefresh(2000); }
-        refreshLayout.setOnLoadMoreListener { refreshlayout -> refreshlayout.finishLoadMore(2000); }
+        refreshLayout.setOnRefreshListener { it.finishRefresh(2000)
+            getData()}
+        refreshLayout.setOnLoadMoreListener { it.finishLoadMore(2000)}
         refreshLayout.setRefreshHeader(FunGameBattleCityHeader(this))
         refreshLayout.setRefreshFooter(BallPulseFooter(this))
     }
