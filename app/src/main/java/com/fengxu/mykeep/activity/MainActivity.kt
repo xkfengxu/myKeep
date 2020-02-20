@@ -2,12 +2,15 @@ package com.fengxu.mykeep.activity
 
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
+import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONArray
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.fengxu.mykeep.R
@@ -18,6 +21,7 @@ import com.fengxu.mykeep.bean.Article
 import com.fengxu.mykeep.http.RetrofitHelper
 import com.fengxu.mykeep.http.api.RapApi
 import com.fengxu.mykeep.utils.FileUtil
+import com.fengxu.mykeep.utils.FileUtil.getValueFromJsonFile
 import com.fengxu.mykeep.utils.Key
 import com.fengxu.mykeep.widget.BannerView
 import com.fengxu.mykeep.widget.banner.CircleIndicator
@@ -74,20 +78,30 @@ class MainActivity : BaseActivity() {
     /**
      * 请求轮播图
      */
+    @Suppress("UNCHECKED_CAST")
     private fun getBannerUrl() {
+        val cacheUrlString = getValueFromJsonFile(Key.BANNER_URL)
         if (mBannerView == null) {
             mBannerView = findViewById(R.id.banner_view)
             mBannerView!!.setIndicator(CircleIndicator(applicationContext))
-            // TODO 读取菜单缓存
+            if (!TextUtils.isEmpty(cacheUrlString)) {
+                bannerUrl.addAll(JSONArray.parseArray(cacheUrlString) as List<String>)
+                mBannerView?.setBannerData(bannerUrl)
+            }
         }
         RetrofitHelper.instance.requestListData<String>({
             RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner()
         }, {
             it.data?.let { list ->
-                FileUtil.saveValueToJsonFile(Key.BANNER_URL, it.data.toString())
-                bannerUrl.addAll(list)
+                val jsonUrl  = JSON.toJSONString(it.data)
+                if (jsonUrl != cacheUrlString) {
+                    FileUtil.saveValueToJsonFile(Key.BANNER_URL, jsonUrl)
+                    bannerUrl.clear()
+                    bannerUrl.addAll(list)
+                    mBannerView!!.setIndicator(CircleIndicator(applicationContext))
+                    mBannerView?.setBannerData(bannerUrl)
+                }
             }
-            mBannerView?.setBannerData(bannerUrl)
         }, {})
     }
 

@@ -2,8 +2,6 @@ package com.fengxu.mykeep.utils
 
 import com.fengxu.mykeep.MyApplication
 import java.io.*
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 import java.nio.ByteBuffer
 
 /**
@@ -70,38 +68,12 @@ object FileUtil {
     }
 
     /**
-     * 获取泛型类的type
-     *
-     * @param raw 泛型类的class, 如BaseResponse4Object.class
-     * @param args 泛型实参的class, LotteryBean.class
-     * @return 泛型类的type
-     */
-    fun type(
-        raw: Class<*>,
-        args: Type
-    ): ParameterizedType? {
-        return object : ParameterizedType {
-            override fun getActualTypeArguments(): Array<Type> {
-                return arrayOf(args)
-            }
-
-            override fun getOwnerType(): Type? {
-                return null
-            }
-
-            override fun getRawType(): Type {
-                return raw
-            }
-        }
-    }
-
-    /**
      * 获取json文件
      *
      * @param key 文件名
      */
     private fun getJsonFile(key: String): File? {
-        val fileDirName = MyApplication.instance.cacheDir?.parent + File.separator + JSON_DIR_NAME
+        val fileDirName = MyApplication.CONTEXT.cacheDir?.parent + File.separator + JSON_DIR_NAME
         val parentFile = File(fileDirName)
         var file: File? = null
         if (parentFile.exists()) {

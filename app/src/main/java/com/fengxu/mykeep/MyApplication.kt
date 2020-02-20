@@ -1,6 +1,8 @@
 package com.fengxu.mykeep
 
+import android.content.Context
 import com.fengxu.mykeep.base.BaseApp
+import kotlin.properties.Delegates
 
 /**
  * @author fengxu
@@ -12,12 +14,11 @@ class MyApplication : BaseApp() {
      * 双重校验锁式单例
      */
     companion object {
-        val instance: MyApplication by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            MyApplication()
-        }
+        var CONTEXT: Context by Delegates.notNull()
     }
 
     override fun initConfig() {
+        CONTEXT = applicationContext
         VERSION_NAME = BuildConfig.VERSION_NAME
         SIGN = BuildConfig.SIGN
     }
