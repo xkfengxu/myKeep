@@ -10,6 +10,7 @@ import java.nio.ByteBuffer
  * @description 文件操作工具类
  * 用object 修饰的类为静态类，里面的方法和变量都为静态的。
  */
+@Deprecated("用MMKV替换")
 object FileUtil {
 
     private const val JSON_DIR_NAME = "app_json"
@@ -17,6 +18,7 @@ object FileUtil {
     /**
      * 同步：保存json串到文件中
      */
+    @Deprecated("用MMKV替换")
     fun saveValueToJsonFile(key: String?, value: String): Boolean {
         val jsonFile: File = key?.let { getJsonFile(it) } ?: return false
         var fos: FileOutputStream? = null
@@ -40,6 +42,7 @@ object FileUtil {
     /**
      * 使用NIO获取json串
      */
+    @Deprecated("用MMKV替换")
     fun getValueFromJsonFile(key: String?): String? {
         val jsonFile: File? = key?.let { getJsonFile(it) }
         if (jsonFile == null || !jsonFile.exists()) {

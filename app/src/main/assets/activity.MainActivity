@@ -11,3 +11,6 @@ retrofit + Coroutines
 ---↑↑5.2M------------------
 okhttp3:logging-interceptor
 fastjson
+lifecycle-viewmodel
+ExplosionField
+MMKV

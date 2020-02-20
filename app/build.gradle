@@ -41,7 +41,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //kotlin版本
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
     //安卓兼容包 适配webview问题-https://www.jianshu.com/p/69e60612d048
     implementation 'androidx.appcompat:appcompat:1.1.0'
     //约束布局
@@ -74,7 +74,11 @@ dependencies {
     //fastjson
     implementation 'com.alibaba:fastjson:1.2.61'
     //lifecycle-viewmodel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    //ExplosionField
+    implementation 'tyrantgit:explosionfield:1.0.1'
+    //MMKV
+    implementation 'com.tencent:mmkv-static:1.0.24'
 }
 
 /**

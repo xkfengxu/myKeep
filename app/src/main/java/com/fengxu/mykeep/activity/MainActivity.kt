@@ -20,8 +20,6 @@ import com.fengxu.mykeep.bean.Action
 import com.fengxu.mykeep.bean.Article
 import com.fengxu.mykeep.http.RetrofitHelper
 import com.fengxu.mykeep.http.api.RapApi
-import com.fengxu.mykeep.utils.FileUtil
-import com.fengxu.mykeep.utils.FileUtil.getValueFromJsonFile
 import com.fengxu.mykeep.utils.Key
 import com.fengxu.mykeep.widget.BannerView
 import com.fengxu.mykeep.widget.banner.CircleIndicator
@@ -29,6 +27,9 @@ import com.scwang.smartrefresh.header.FunGameBattleCityHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter
+import com.tencent.mmkv.MMKV
+import tyrantgit.explosionfield.ExplosionField
+
 
 class MainActivity : BaseActivity() {
 
@@ -42,10 +43,20 @@ class MainActivity : BaseActivity() {
     }
 
     override fun intiView() {
-        findViewById<TextView>(R.id.tv_confirm).setOnClickListener {
+        //初始化mmkv
+        MMKV.initialize(this)
+        //粒子爆炸效果
+        val explosionField = ExplosionField.attach2Window(this)
+        val textview = findViewById<TextView>(R.id.tv_confirm)
+        val lottie = findViewById<LottieAnimationView>(R.id.animation_view)
+        mBannerView = findViewById(R.id.banner_view)
+        textview.setOnClickListener {
             showFloatView(this.localClassName)
         }
-        val lottie = findViewById<LottieAnimationView>(R.id.animation_view)
+        lottie.setOnClickListener {
+            explosionField.explode(lottie)
+            lottie.visibility = View.GONE
+        }
         //recyclerView 设置layoutManager，adapter
         val recyclerView = findViewById<RecyclerView>(R.id.rl_video)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -79,14 +90,12 @@ class MainActivity : BaseActivity() {
      */
     @Suppress("UNCHECKED_CAST")
     private fun getBannerUrl() {
-        val cacheUrlString = getValueFromJsonFile(Key.BANNER_URL)
-        if (mBannerView == null) {
-            mBannerView = findViewById(R.id.banner_view)
+        val kv = MMKV.defaultMMKV()
+        val cacheUrlString = kv.decodeString(Key.BANNER_URL)
+        if (!TextUtils.isEmpty(cacheUrlString)) {
+            bannerUrl.addAll(JSONArray.parseArray(cacheUrlString) as List<String>)
             mBannerView!!.setIndicator(CircleIndicator(applicationContext))
-            if (!TextUtils.isEmpty(cacheUrlString)) {
-                bannerUrl.addAll(JSONArray.parseArray(cacheUrlString) as List<String>)
-                mBannerView?.setBannerData(bannerUrl)
-            }
+            mBannerView?.setBannerData(bannerUrl)
         }
         RetrofitHelper.instance.requestListData<String>({
             RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner()
@@ -94,7 +103,7 @@ class MainActivity : BaseActivity() {
             it.data?.let { list ->
                 val jsonUrl = JSON.toJSONString(it.data)
                 if (jsonUrl != cacheUrlString) {
-                    FileUtil.saveValueToJsonFile(Key.BANNER_URL, jsonUrl)
+                    kv.encode(Key.BANNER_URL, jsonUrl)
                     bannerUrl.clear()
                     bannerUrl.addAll(list)
                     mBannerView!!.setIndicator(CircleIndicator(applicationContext))
@@ -137,9 +146,11 @@ class MainActivity : BaseActivity() {
      */
     private fun testSmartRefreshLayout() {
         val refreshLayout = findViewById<SmartRefreshLayout>(R.id.rf_video) as RefreshLayout
-        refreshLayout.setOnRefreshListener { it.finishRefresh(2000)
-            getData()}
-        refreshLayout.setOnLoadMoreListener { it.finishLoadMore(2000)}
+        refreshLayout.setOnRefreshListener {
+            it.finishRefresh(2000)
+            getData()
+        }
+        refreshLayout.setOnLoadMoreListener { it.finishLoadMore(2000) }
         refreshLayout.setRefreshHeader(FunGameBattleCityHeader(this))
         refreshLayout.setRefreshFooter(BallPulseFooter(this))
     }

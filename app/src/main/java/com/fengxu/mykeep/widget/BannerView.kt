@@ -233,7 +233,9 @@ class BannerView @JvmOverloads constructor(
         mBannerUrlList!!.clear()
         mBannerUrlList!!.addAll(bannerData)
         mAdapter?.notifyDataSetChanged()
-        startPlay(mDelayTime)
+        if (!isPlay) {
+            startPlay(mDelayTime)
+        }
         mIndicator?.setCellCount(bannerData.size)
     }
 
