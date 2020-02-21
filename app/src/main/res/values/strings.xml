@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">myKeep</string>
+    <string name="app_statement">keep your keep</string>
+    <string name="advertising">广告</string>
+    <string name="skip">%1$d|跳过</string>
     <string name="show_recording">展示记录</string>
+    <string name="double_click_exit">再按一次退出程序</string>
 </resources>

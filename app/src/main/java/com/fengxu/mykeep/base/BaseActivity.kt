@@ -23,12 +23,18 @@ abstract class BaseActivity : AppCompatActivity() {
     @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppManager.instance.pushActivity(this)
         beforeViews()
         setContentView(getContentView())
-        intiView()
         contentView =
             this.window?.decorView?.rootView?.findViewById(android.R.id.content)
         floatView = this.layoutInflater.inflate(R.layout.view_float, null)
+        intiView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppManager.instance.popActivity()
     }
 
     abstract fun intiView()

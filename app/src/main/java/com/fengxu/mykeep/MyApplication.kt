@@ -1,6 +1,8 @@
 package com.fengxu.mykeep
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import com.alibaba.android.arouter.launcher.ARouter
 import com.fengxu.mykeep.base.BaseApp
 import kotlin.properties.Delegates
 
@@ -10,14 +12,18 @@ import kotlin.properties.Delegates
  */
 class MyApplication : BaseApp() {
 
-    /**
-     * 双重校验锁式单例
-     */
     companion object {
         var CONTEXT: Context by Delegates.notNull()
     }
 
     override fun initConfig() {
+        if (applicationInfo != null &&
+            applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+        ) {
+            ARouter.openLog() // Print log
+            ARouter.openDebug() // Turn on debugging mode (If you are running in InstantRun mode, you must turn on debug mode! Online version needs to be closed, otherwise there is a security risk)
+        }
+        ARouter.init(this)
         CONTEXT = applicationContext
         VERSION_NAME = BuildConfig.VERSION_NAME
         SIGN = BuildConfig.SIGN

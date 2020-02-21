@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'AndResGuard'
+apply plugin: 'kotlin-kapt'
 
 android {
     signingConfigs {
@@ -38,6 +39,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    //KAPT(Annotation Processing for Kotlin)
+    kapt {
+        arguments {
+            arg("AROUTER_MODULE_NAME", project.getName())
+        }
+    }
 
 }
 
@@ -59,7 +66,7 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'  //没有使用特殊Header，可以不加这行
     //Leakcanary 检测内存泄露(仅debug版本使用)
-//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    //implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
     //动画 素材 www.lottiefiles.com
     implementation "com.airbnb.android:lottie:3.3.1"
@@ -69,8 +76,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     //retrofit
-    implementation"com.squareup.retrofit2:retrofit:2.7.1"
-    implementation"com.squareup.retrofit2:converter-gson:2.7.1"
+    implementation "com.squareup.retrofit2:retrofit:2.7.1"
+    implementation "com.squareup.retrofit2:converter-gson:2.7.1"
     //okhttp拦截器
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
     //kotlin-Coroutines 协程
@@ -86,6 +93,9 @@ dependencies {
     implementation 'com.tencent:mmkv-static:1.0.24'
     //openingstartanimation
     implementation 'site.gemus:openingstartanimation:1.0.0'
+    //arouter
+    implementation 'com.alibaba:arouter-api:1.5.0'
+    kapt 'com.alibaba:arouter-compiler:1.2.2'
 }
 
 /**

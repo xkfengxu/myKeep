@@ -13,8 +13,8 @@ class CommonAdapter(data: MutableList<MultiItemEntity>?) :
     BaseProviderMultiAdapter<MultiItemEntity>(data) {
 
     companion object {
-        const val TYPE_ACTION: Int = 1
-        const val TYPE_ARTICLE: Int = 2
+        const val TYPE_ACTION = 1
+        const val TYPE_ARTICLE = 2
     }
 
     init {

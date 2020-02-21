@@ -9,15 +9,17 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.alibaba.fastjson.JSON
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONArray
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.fengxu.mykeep.R
 import com.fengxu.mykeep.adapter.CommonAdapter
+import com.fengxu.mykeep.base.AppManager
 import com.fengxu.mykeep.base.BaseActivity
 import com.fengxu.mykeep.bean.Action
 import com.fengxu.mykeep.bean.Article
+import com.fengxu.mykeep.constant.RouteConstant
 import com.fengxu.mykeep.http.RetrofitHelper
 import com.fengxu.mykeep.http.api.RapApi
 import com.fengxu.mykeep.utils.Key
@@ -28,27 +30,23 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter
 import com.tencent.mmkv.MMKV
-import site.gemus.openingstartanimation.OpeningStartAnimation
 import tyrantgit.explosionfield.ExplosionField
 
 
+@Route(path = RouteConstant.ACTIVITY_MAIN)
 class MainActivity : BaseActivity() {
 
     private var adapter: CommonAdapter? = CommonAdapter(null)
     private val actionList = ArrayList<MultiItemEntity>()
     private val bannerUrl: MutableList<String> = ArrayList()
     private var mBannerView: BannerView? = null
+    private var lastClickTime: Long = 0
 
     override fun getContentView(): Int {
         return R.layout.activity_main
     }
 
     override fun intiView() {
-        val openingStartAnimation = OpeningStartAnimation.Builder(this)
-            .create()
-        openingStartAnimation.show(this)
-        //初始化mmkv
-        MMKV.initialize(this)
         //粒子爆炸效果
         val explosionField = ExplosionField.attach2Window(this)
         val textview = findViewById<TextView>(R.id.tv_confirm)
@@ -90,31 +88,16 @@ class MainActivity : BaseActivity() {
     }
 
     /**
-     * 请求轮播图
+     * 轮播图
      */
     @Suppress("UNCHECKED_CAST")
     private fun getBannerUrl() {
-        val kv = MMKV.defaultMMKV()
-        val cacheUrlString = kv.decodeString(Key.BANNER_URL)
+        val cacheUrlString = MMKV.defaultMMKV().decodeString(Key.BANNER_URL)
         if (!TextUtils.isEmpty(cacheUrlString)) {
             bannerUrl.addAll(JSONArray.parseArray(cacheUrlString) as List<String>)
             mBannerView!!.setIndicator(CircleIndicator(applicationContext))
             mBannerView?.setBannerData(bannerUrl)
         }
-        RetrofitHelper.instance.requestListData<String>({
-            RetrofitHelper.instance.getRapApi(RapApi::class.java).getBanner()
-        }, {
-            it.data?.let { list ->
-                val jsonUrl = JSON.toJSONString(it.data)
-                if (jsonUrl != cacheUrlString) {
-                    kv.encode(Key.BANNER_URL, jsonUrl)
-                    bannerUrl.clear()
-                    bannerUrl.addAll(list)
-                    mBannerView!!.setIndicator(CircleIndicator(applicationContext))
-                    mBannerView?.setBannerData(bannerUrl)
-                }
-            }
-        }, {})
     }
 
     /**
@@ -178,6 +161,17 @@ class MainActivity : BaseActivity() {
                 "ss",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    //双击退出
+    override fun onBackPressed() {
+        val secondTime = System.currentTimeMillis()
+        if (secondTime - lastClickTime > 2000) {
+            Toast.makeText(this, this.resources.getString(R.string.double_click_exit), Toast.LENGTH_SHORT).show()
+            lastClickTime = secondTime
+        } else {
+            AppManager.instance.appExit()
         }
     }
 }
