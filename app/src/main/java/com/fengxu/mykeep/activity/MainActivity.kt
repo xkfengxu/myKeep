@@ -28,6 +28,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter
 import com.tencent.mmkv.MMKV
+import site.gemus.openingstartanimation.OpeningStartAnimation
 import tyrantgit.explosionfield.ExplosionField
 
 
@@ -43,6 +44,9 @@ class MainActivity : BaseActivity() {
     }
 
     override fun intiView() {
+        val openingStartAnimation = OpeningStartAnimation.Builder(this)
+            .create()
+        openingStartAnimation.show(this)
         //初始化mmkv
         MMKV.initialize(this)
         //粒子爆炸效果
