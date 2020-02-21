@@ -15,7 +15,6 @@ import com.fengxu.mykeep.utils.Key
 import com.fengxu.mykeep.widget.TimeCount
 import com.fengxu.mykeep.widget.TimeCount.SimpleCountOverListener
 import com.tencent.mmkv.MMKV
-import site.gemus.openingstartanimation.OpeningStartAnimation
 
 /**
  * @author fengxu
@@ -24,17 +23,16 @@ import site.gemus.openingstartanimation.OpeningStartAnimation
 @Route(path = RouteConstant.ACTIVITY_SPLASH)
 class SplashActivity : BaseActivity() {
 
-    private val timerDuration = 5000L
+    private val timerDuration = 3000L
     private val refreshTime = 1000L
-    private val animationInterval = 1500L
 
     override fun intiView() {
         //开屏页动画
-        val openingStartAnimation = OpeningStartAnimation.Builder(this)
-            .setAppStatement(resources.getString(R.string.app_statement))
-            .setAnimationInterval(animationInterval)
-            .create()
-        openingStartAnimation.show(this)
+//        val openingStartAnimation = OpeningStartAnimation.Builder(this)
+//            .setAppStatement(resources.getString(R.string.app_statement))
+//            .setAnimationInterval(animationInterval)
+//            .create()
+//        openingStartAnimation.show(this)
         //初始化mmkv
         MMKV.initialize(this)
         getBannerUrl()
@@ -65,6 +63,10 @@ class SplashActivity : BaseActivity() {
         ARouter.getInstance().build(RouteConstant.ACTIVITY_MAIN)
             .navigation()
         finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
     /**
