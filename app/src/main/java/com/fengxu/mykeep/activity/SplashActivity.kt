@@ -92,9 +92,4 @@ class SplashActivity : BaseActivity() {
     override fun getContentView(): Int {
         return R.layout.activity_splash
     }
-
-    override fun onDestroy() {
-        lottie = null
-        super.onDestroy()
-    }
 }

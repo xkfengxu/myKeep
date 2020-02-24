@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 /**
- * @author fengxu
+ * @author fx
  * @createDate 2020 02 21
  * @description Activity管理器
  */
