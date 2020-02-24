@@ -1,9 +1,6 @@
 package com.fengxu.mykeep.activity
 
-import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.text.TextUtils
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,62 +33,65 @@ import tyrantgit.explosionfield.ExplosionField
 @Route(path = RouteConstant.ACTIVITY_MAIN)
 class MainActivity : BaseActivity() {
 
-    private var adapter: CommonAdapter? = CommonAdapter(null)
+    /**
+     * 动作数据列表
+     */
     private val actionList = ArrayList<MultiItemEntity>()
+    /**
+     * 轮播图地址
+     */
     private val bannerUrl: MutableList<String> = ArrayList()
+    /**
+     * 动作列表adapter
+     */
+    private var actionAdapter: CommonAdapter? = CommonAdapter(null)
+    /**
+     * 轮播图控件
+     */
     private var mBannerView: BannerView? = null
+    /**
+     * lottie动画控件
+     */
+    private var lottie: LottieAnimationView? = null
+    /**
+     * 上次点击时间
+     */
     private var lastClickTime: Long = 0
 
-    override fun getContentView(): Int {
-        return R.layout.activity_main
-    }
-
     override fun intiView() {
-        //粒子爆炸效果
-        val explosionField = ExplosionField.attach2Window(this)
-        val textview = findViewById<TextView>(R.id.tv_confirm)
-        val lottie = findViewById<LottieAnimationView>(R.id.animation_view)
+        //初始化全局控件
         mBannerView = findViewById(R.id.banner_view)
-        textview.setOnClickListener {
+        lottie = findViewById(R.id.animation_view)
+        //粒子爆炸控件
+        val explosionField = ExplosionField.attach2Window(this)
+        //测试，展示应用第三方框架
+        val confirm = findViewById<TextView>(R.id.tv_confirm)
+        confirm.setOnClickListener {
             showFloatView(this.localClassName)
         }
-        lottie.setOnClickListener {
+        lottie?.setOnClickListener {
+            //粒子爆炸效果，并移除lottie控件
             explosionField.explode(lottie)
-            lottie.visibility = View.GONE
+            lottie = null
         }
-        //recyclerView 设置layoutManager，adapter
+        //recyclerView 设置layoutManager，actionAdapter
         val recyclerView = findViewById<RecyclerView>(R.id.rl_video)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-        testRecyclerViewAdapterHelper()
+        recyclerView.adapter = actionAdapter
+        //设置轮播图
+        setBannerUrl()
+        //设置并测试部分第三方框架
+        setLottieAnimationView()
         testSmartRefreshLayout()
-        setLottieAnimationView(lottie)
-        getBannerUrl()
+        testRecyclerViewAdapterHelper()
     }
 
     /**
-     * 请求测试数据
-     */
-    private fun getData() {
-        RetrofitHelper.instance.requestListData<Action>({
-            RetrofitHelper.instance.getRapApi(RapApi::class.java).getActionList()
-        }, {
-            actionList.clear()
-            it.data?.let { list -> actionList.addAll(list) }
-            adapter?.setNewData(null)
-            adapter?.setDiffNewData(actionList)
-        }, {
-            actionList.clear()
-            adapter?.setNewData(null)
-            adapter?.setDiffNewData(actionList)
-        })
-    }
-
-    /**
-     * 轮播图
+     * 设置轮播图
      */
     @Suppress("UNCHECKED_CAST")
-    private fun getBannerUrl() {
+    private fun setBannerUrl() {
+        //获取数据
         val cacheUrlString = MMKV.defaultMMKV().decodeString(Key.BANNER_URL)
         if (!TextUtils.isEmpty(cacheUrlString)) {
             bannerUrl.addAll(JSONArray.parseArray(cacheUrlString) as List<String>)
@@ -101,29 +101,13 @@ class MainActivity : BaseActivity() {
     }
 
     /**
-     * Lottie设置
+     * 设置Lottie动画
      */
-    private fun setLottieAnimationView(lottie: LottieAnimationView) {
-        //动画监听
-        lottie.addAnimatorListener(object : AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
-                lottie.visibility = View.GONE
-            }
-
-            override fun onAnimationCancel(animation: Animator) {
-                lottie.visibility = View.GONE
-            }
-
-            override fun onAnimationRepeat(animation: Animator) {
-            }
-        })
-        //倒放
-//        lottie.speed = (-1).toFloat()
+    private fun setLottieAnimationView() {
+        //speed值为负数时倒放
+//        lottie?.speed = (-1).toFloat()
         //当你设置-1的时候就代表无限循环
-        lottie.repeatCount = -1
+        lottie?.repeatCount = -1
     }
 
     /**
@@ -133,11 +117,13 @@ class MainActivity : BaseActivity() {
      */
     private fun testSmartRefreshLayout() {
         val refreshLayout = findViewById<SmartRefreshLayout>(R.id.rf_video) as RefreshLayout
+        //刷新事件监听，延时至少2秒，加载数据
         refreshLayout.setOnRefreshListener {
             it.finishRefresh(2000)
-            getData()
+            getActionData()
         }
         refreshLayout.setOnLoadMoreListener { it.finishLoadMore(2000) }
+        //可设置不同的刷新头部，底部
         refreshLayout.setRefreshHeader(FunGameBattleCityHeader(this))
         refreshLayout.setRefreshFooter(BallPulseFooter(this))
     }
@@ -146,16 +132,18 @@ class MainActivity : BaseActivity() {
      * 试用 RecyclerViewAdapterHelper
      */
     private fun testRecyclerViewAdapterHelper() {
+        //测试数据
         actionList.add(Action("a"))
         actionList.add(Article("b"))
         actionList.add(Action("c"))
-        adapter?.addData(actionList)
-        adapter?.addChildClickViewIds(R.id.tv_action_name)
+        actionAdapter?.addData(actionList)
+        actionAdapter?.addChildClickViewIds(R.id.tv_action_name)
         //item动画
-        adapter?.setAnimationWithDefault(BaseQuickAdapter.AnimationType.AlphaIn)
+        actionAdapter?.setAnimationWithDefault(BaseQuickAdapter.AnimationType.AlphaIn)
         //空数据页面
-        adapter?.setEmptyView(R.layout.view_empty)
-        adapter?.setOnItemClickListener { _, _, _ ->
+        actionAdapter?.setEmptyView(R.layout.view_empty)
+        //item点击事件，用于测试
+        actionAdapter?.setOnItemClickListener { _, _, _ ->
             Toast.makeText(
                 this,
                 "ss",
@@ -164,14 +152,45 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    /**
+     * 请求动作测试数据
+     */
+    private fun getActionData() {
+        RetrofitHelper.instance.requestListData<Action>({
+            RetrofitHelper.instance.getRapApi(RapApi::class.java).getActionList()
+        }, {
+            actionList.clear()
+            it.data?.let { list -> actionList.addAll(list) }
+            actionAdapter?.setNewData(null)
+            actionAdapter?.setDiffNewData(actionList)
+        }, {
+            actionList.clear()
+            actionAdapter?.setNewData(null)
+            actionAdapter?.setDiffNewData(actionList)
+        })
+    }
+
     //双击退出
     override fun onBackPressed() {
         val secondTime = System.currentTimeMillis()
         if (secondTime - lastClickTime > 2000) {
-            Toast.makeText(this, this.resources.getString(R.string.double_click_exit), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                this.resources.getString(R.string.double_click_exit),
+                Toast.LENGTH_SHORT
+            ).show()
             lastClickTime = secondTime
         } else {
             AppManager.instance.appExit()
         }
+    }
+
+    override fun getContentView(): Int {
+        return R.layout.activity_main
+    }
+
+    override fun onDestroy() {
+        lottie = null
+        super.onDestroy()
     }
 }

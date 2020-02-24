@@ -10,11 +10,12 @@ import kotlin.system.exitProcess
  * @createDate 2020 02 21
  * @description Activity管理器
  */
-class AppManager private constructor(){
+class AppManager private constructor() {
 
     companion object {
         val instance: AppManager by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            AppManager() }
+            AppManager()
+        }
     }
 
     private val activityStack = Stack<Activity>()

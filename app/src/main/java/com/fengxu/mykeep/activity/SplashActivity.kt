@@ -16,15 +16,18 @@ import com.fengxu.mykeep.widget.TimeCount
 import com.fengxu.mykeep.widget.TimeCount.SimpleCountOverListener
 import com.tencent.mmkv.MMKV
 
-/**
- * @author fengxu
- */
-
 @Route(path = RouteConstant.ACTIVITY_SPLASH)
 class SplashActivity : BaseActivity() {
 
-    private val timerDuration = 3000L
-    private val refreshTime = 1000L
+    /**
+     * timerDuration ：页面持续时间
+     * refreshTime ： 页面刷新时间
+     */
+    private val timerDuration = 4000L
+    /**
+     * lottie动画控件
+     */
+    private var lottie: LottieAnimationView? = null
 
     override fun intiView() {
         //开屏页动画
@@ -33,26 +36,31 @@ class SplashActivity : BaseActivity() {
 //            .setAnimationInterval(animationInterval)
 //            .create()
 //        openingStartAnimation.show(this)
-        //初始化mmkv
-        MMKV.initialize(this)
-        getBannerUrl()
+        //refreshTime ： 页面刷新时间
+        val refreshTime = 1000L
         //开屏页倒计时
         val timeCount = TimeCount(timerDuration, refreshTime)
-        val skip = findViewById<TextView>(R.id.tv_skip)
+        lottie = findViewById(R.id.animation_view)
         timeCount.setOnCountOverListener(object : SimpleCountOverListener() {
             override fun onCountOver(isFinish: Boolean) {
                 gotoMain()
             }
 
             override fun onCountTick(millisUntilFinished: Long) {
-                //越跑越快
-                findViewById<LottieAnimationView>(R.id.animation_view).speed =
+                //越跑越快的效果
+                lottie?.speed =
                     ((timerDuration - millisUntilFinished) / 500L).toFloat()
-                skip.text =
-                    resources.getString(R.string.skip, (millisUntilFinished / 1000L).toInt() + 1)
+//                skip.text =
+//                    resources.getString(R.string.skip, (millisUntilFinished / 1000L).toInt() + 1)
             }
         })
         timeCount.start()
+        //初始化
+        MMKV.initialize(this)
+        //请求轮播图url
+        getBannerUrl()
+        //跳过按钮，目前隐藏
+        val skip = findViewById<TextView>(R.id.tv_skip)
         skip.setOnClickListener { gotoMain() }
     }
 
@@ -63,10 +71,6 @@ class SplashActivity : BaseActivity() {
         ARouter.getInstance().build(RouteConstant.ACTIVITY_MAIN)
             .navigation()
         finish()
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
     /**
@@ -87,5 +91,10 @@ class SplashActivity : BaseActivity() {
 
     override fun getContentView(): Int {
         return R.layout.activity_splash
+    }
+
+    override fun onDestroy() {
+        lottie = null
+        super.onDestroy()
     }
 }
