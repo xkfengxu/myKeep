@@ -1,6 +1,7 @@
 package com.fengxu.mykeep.base
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.core.view.contains
 import com.fengxu.mykeep.R
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.ref.WeakReference
 
 /**
  * @author fengxu
@@ -23,7 +25,7 @@ abstract class BaseActivity : AppCompatActivity() {
     @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppManager.instance.pushActivity(this)
+        AppManager.instance.pushActivity(WeakReference(this))
         beforeViews()
         setContentView(getContentView())
         contentView =

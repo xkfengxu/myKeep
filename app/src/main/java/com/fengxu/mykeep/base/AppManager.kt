@@ -2,6 +2,7 @@ package com.fengxu.mykeep.base
 
 import android.app.Activity
 import com.alibaba.android.arouter.launcher.ARouter
+import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -18,12 +19,12 @@ class AppManager private constructor() {
         }
     }
 
-    private val activityStack = Stack<Activity>()
+    private val activityStack = Stack<WeakReference<Activity>>()
 
     /**
      * 添加Activity到栈
      */
-    fun pushActivity(activity: Activity?) {
+    fun pushActivity(activity: WeakReference<Activity>?) {
         activityStack.push(activity)
     }
 
@@ -41,10 +42,10 @@ class AppManager private constructor() {
      * 结束指定的Activity(重载)
      */
     @Deprecated("never use")
-    fun finishActivity(activity: Activity?) {
+    fun finishActivity(activity: WeakReference<Activity>?) {
         if (activity != null) {
             activityStack.remove(activity)
-            activity.finish()
+            activity.get()?.finish()
         }
     }
 
@@ -55,7 +56,7 @@ class AppManager private constructor() {
     fun finishOthersActivity(cls: Class<*>) {
         for (i in activityStack.indices) {
             if (activityStack[i].javaClass != cls) {
-                activityStack[i].finish()
+                activityStack[i].get()?.finish()
             }
         }
     }
@@ -68,7 +69,7 @@ class AppManager private constructor() {
         val size = activityStack.size
         while (i < size) {
             if (null != activityStack[i]) {
-                activityStack[i].finish()
+                activityStack[i].get()?.finish()
             }
             i++
         }

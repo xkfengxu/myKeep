@@ -1,0 +1,13 @@
+出自：https://blog.csdn.net/u012551350/article/details/97079164
+LeakCanary -版本变化（2.0）
+1.百分之百使用 Kotlin 重写
+2.自动初始化，无需用户手动再添加初始化代码
+3.支持 fragment，支持 androidx
+4.当泄露引用到达 5 个时才会发起 heap dump
+5.全新的 heap parser，减少 90% 内存占用，提升 6 倍速度
+（2）LeakCanary 利用 ContentProvier 进行了初始化（LeakSentryInstaller ）
+ContentProvier 一般会在 Application 被创建之前被加载，LeakCanary 在其 onCreate() 方法中调用了 InternalLeakSentry.install(application) 进行初始化
+因为它本身就是一个只在 debug 版本中使用的库，并不会对 release 版本有任何影响（不会对release版本应用启动速度产生影响）
+
+
+
