@@ -211,6 +211,14 @@ arcelable的性能要强于Serializable的原因
 
 navigation 没玩懂
 
+joda（keep有使用）时间处理
+
+Live Templates 高效的写一些固定模式的代码，以提高编码效率
+
+packer-tool 多渠道打包工具
+
+反编译相关：apktool，dex2jar,jd-gui,Xposed
+
 =====================wait check==================
 https://www.jianshu.com/p/f5514b1a826c
 Tinker application  - 代理 委托

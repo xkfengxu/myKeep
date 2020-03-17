@@ -12,5 +12,6 @@ class RouteConstant {
         const val MY_KEEP = "/myKeep"
         const val ACTIVITY_MAIN = "$MY_KEEP/MainActivity"
         const val ACTIVITY_SPLASH = "$MY_KEEP/SplashActivity"
+        const val ACTIVITY_CAMERA = "$MY_KEEP/CameraActivity"
     }
 }

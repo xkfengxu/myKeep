@@ -11,18 +11,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:banner_auto_scroll="true"
-        app:banner_page_margin="32dp"
-        app:banner_radius="5dp"
+        app:banner_page_margin="@dimen/dp_32"
+        app:banner_radius="@dimen/dp_5"
         app:banner_toggle_duration="1800"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/scan_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_10"
+        android:background="@color/blue_a0e5ed"
+        android:contentDescription="@string/scan_code"
+        android:src="@drawable/scan_code"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/rf_video"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintVertical_weight="1"
         app:layout_constraintBottom_toTopOf="@id/tv_confirm"
         app:layout_constraintTop_toBottomOf="@id/banner_view"
+        app:layout_constraintVertical_weight="1"
         app:srlEnablePreviewInEditMode="true">
 
         <com.scwang.smartrefresh.layout.header.BezierRadarHeader
@@ -46,7 +57,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="14206-sport-run.json"
+        app:lottie_fileName="lottie/hard.json"
         app:lottie_loop="true" />
 
     <TextView

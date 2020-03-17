@@ -23,7 +23,7 @@ class SplashActivity : BaseActivity() {
      * timerDuration ：页面持续时间
      * refreshTime ： 页面刷新时间
      */
-    private val timerDuration = 4000L
+    private val timerDuration = 3000L
     /**
      * lottie动画控件
      */

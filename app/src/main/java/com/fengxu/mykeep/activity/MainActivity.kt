@@ -1,12 +1,18 @@
 package com.fengxu.mykeep.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.text.TextUtils
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONArray
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
@@ -84,6 +90,34 @@ class MainActivity : BaseActivity() {
         setLottieAnimationView()
         testSmartRefreshLayout()
         testRecyclerViewAdapterHelper()
+        //跳转扫码界面
+        findViewById<ImageView>(R.id.scan_code).setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // android 6.0以上需要动态申请权限
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 1000)
+                return@setOnClickListener
+            }
+            ARouter.getInstance().build(RouteConstant.ACTIVITY_CAMERA)
+                .navigation()
+        }
+    }
+
+    /**
+     * 权限请求回调
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            ARouter.getInstance().build(RouteConstant.ACTIVITY_CAMERA)
+                .navigation()
+        }
     }
 
     /**
