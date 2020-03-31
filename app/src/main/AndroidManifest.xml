@@ -34,6 +34,11 @@
         <activity
             android:name=".activity.CameraActivity"
             android:theme="@style/AppTheme"/>
+
+        <activity
+            android:name=".activity.VideoPlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

@@ -183,6 +183,8 @@ class MainActivity : BaseActivity() {
                 "ss",
                 Toast.LENGTH_SHORT
             ).show()
+            ARouter.getInstance().build(RouteConstant.ACTIVITY_VIDEO_PLAYER)
+                .navigation()
         }
     }
 
