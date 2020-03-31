@@ -6,13 +6,19 @@ SmartRefreshLayout
 Leakcanary
 lottie
 glide
----↑↑4.6M------------------
+---↑↑4.1M------------------
 retrofit + Coroutines
----↑↑5.2M------------------
 okhttp3:logging-interceptor
 fastjson
+---↑↑5.3M------------------
 lifecycle-viewmodel
 ExplosionField
 MMKV
 openingstartanimation
 arouter
+Camerax
+---↑↑5.8M------------------
+lottie res
+---↑↑6.6M------------------
+GSYVideoPlayer
+---↑↑16.8M------------------

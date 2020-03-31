@@ -105,6 +105,8 @@ dependencies {
     implementation "androidx.camera:camera-extensions:1.0.0-alpha08"
     // If you want to use the CameraX Lifecycle library
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    //GSYVideoPlayer 视频播放器
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.3'
 }
 
 /**

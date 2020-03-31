@@ -23,6 +23,6 @@ class CommonAdapter(data: MutableList<MultiItemEntity>?) :
     }
 
     override fun getItemType(data: List<MultiItemEntity>, position: Int): Int {
-        return data.get(position).itemType
+        return data[position].itemType
     }
 }
